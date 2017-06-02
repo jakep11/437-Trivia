@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CHS</title>
+
+    <script src="bower_components/angular/angular.min.js"></script>
+   <script 
+   src="bower_components/angular-ui-router/release/angular-ui-router.min.js">
+   </script>
+   <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js">
+   </script>
+   <link rel="stylesheet" 
+   href="bower_components/bootstrap/dist/css/bootstrap.min.css"></script>
+
+   <script src="trsapp.js"></script>
+   <link rel="stylesheet" href="trsapp.css"></script>
+
+   <script src="Util/notifyDlg.js"></script>
+   <script src="Home/homeController.js"></script>
+   <script src="Register/registerController.js"></script>
+   <script src="Login/loginController.js"></script>
+   <script src="Login/loginService.js"></script>
+   <script src="Conversation/cnvOverviewController.js"></script>
+   <script src="Conversation/cnvDetailController.js"></script>
+   <script src="navController.js"></script>
+
+   <script src="ui-routes.js"></script>
+</head>
+
+
+<body ng-app="mainApp">
+   <nav ng-controller="navBar" class="navbar navbar-default">
+      <ul class="nav navbar-nav">
+         <li>
+            <div class="form-group">
+              <select ng-model="$root.language" class="form-control" id="sel1">
+                <option value="EN">{{errMap[language].languages.EN}}</option>
+                <option value="ES">{{errMap[language].languages.ES}}</option>
+               </select>
+            </div>
+         </li>
+         <li ng-if="!user">
+            <a ui-sref="login">Login</a>
+         </li>
+         <li ng-if="!user">
+            <a ui-sref="register">Register</a>
+         </li>
+         <li ng-if="!!user">
+            <a ui-sref="cnvOverview">All Conversations</a>
+         </li>
+         <li ng-if="!!user">
+            <a ui-sref="myCnvOverview({prsID: user.id})">My Conversations</a>
+         </li>
+      </ul>
+      <ul ng-if="!!user" class="nav navbar-nav pull-right">
+         <li><a id="navbarName">{{user.firstName}} {{user.lastName}}</a></li>
+         <li  ng-click="logout()"><a>Logout</a></li>
+      </ul>
+   </nav>
+   <ui-view/>
+</body>
+</html>

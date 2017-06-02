@@ -1,0 +1,13 @@
+<h2>Conversation: {{cnv.title}}</h2>
+<div class="list-group">
+   <div class="list-group-item" ng-repeat="msg in msgs">
+      <div>{{msg.content}}</div>
+      <div>User: {{msg.email}}</div>
+      <div>Time: {{msg.whenMade | date : "medium"}}</div>
+   </div>
+</div>
+
+<button ng-click="newMsg()" class="btn btn-primary" type="button" 
+ style="margin-top:5px">
+   New Post
+</button>
