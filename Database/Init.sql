@@ -15,6 +15,11 @@ create table Person (
    unique key(email)
 );
 
+create table Category (
+   id int auto_increment primary key,
+   title varchar(80) not null
+);
+
 create table Question (
    id int auto_increment primary key,
    ownerId int,
@@ -26,10 +31,6 @@ create table Question (
    unique key UK_title(title)
 );
 
-create table Category (
-   id int auto_increment primary key,
-   title varchar(80) not null
-);
 
 -- Table is initially empty. When question is answer, the table populates
 create table PersonQuestion (
@@ -37,7 +38,7 @@ create table PersonQuestion (
   personId int,
   questionId int,
   foreign key (personId) references Person(id) on delete cascade,
-  foreign key (questionId) references Category(id) on delete cascade,
+  foreign key (questionId) references Category(id) on delete cascade
 );
 
 insert into Person (firstName, lastName, email, password, points, whenRegistered, role)
