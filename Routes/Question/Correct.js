@@ -11,6 +11,7 @@ router.baseURL = 'Qsts/Correct';
 router.get('/', function(req, res) {
    var vld = req.validator;
    var cnn = req.cnn;
+
    async.waterfall([
    function(cb) {
       // Get questions that the user has answered correctly
