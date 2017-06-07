@@ -16,6 +16,7 @@ router.get('/', function(req, res) {
       if(!err) {
          res.json(ctgs);
       }
+      cnn.release();
     });
 
 });
@@ -33,9 +34,9 @@ router.post('/', function(req, res) {
           body.title, cb);
       }
    },
-   function(existingCtg, fields, cb) {
-      if (vld.check(!existingCnv.length, Tags.dupTitle, null, cb))
-         cnn.chkQry("insert into Conversation set ?", body, cb);
+   function(existingCtgs, fields, cb) {
+      if (vld.check(!existingCtgs.length, Tags.dupTitle, null, cb))
+         cnn.chkQry("insert into Category set ?", body, cb);
    },
    function(insRes, fields, cb) {
       res.location(router.baseURL + '/' + insRes.insertId).end();

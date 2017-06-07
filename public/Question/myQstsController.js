@@ -1,32 +1,39 @@
 //Controller for questions
 app.controller('myQstsController',
- ['$scope', '$state', '$http', '$uibModal', 'notifyDlg', 'msgs', 'cnv',
- function($scope, $state, $http, $uibM, nDlg, msgs, cnv) {
-   $scope.msgs = msgs;
-   $scope.cnv = cnv;
-   var cnvUrl = "Cnvs/" + $scope.cnv.id + "/Msgs"
+ ['$scope', '$state','$rootScope', '$http', '$uibModal', 'notifyDlg', 'qsts',
+ function($scope, $state, $rootScope, $http, $uibM, nDlg, qsts) {
+   $scope.qsts = qsts;
 
-   $scope.newMsg = function() {
+   $scope.newQst = function() {
       $scope.title = null;
-      $scope.dlgTitle = "New Message";
+      $scope.dlgTitle = "New Question";
       var selectedTitle;
 
       $uibM.open({
-         templateUrl: 'Category/addMsgDlg.template.html',
+         templateUrl: 'Question/addQstDlg.template.html',
          scope: $scope
       }).result
       .then(function(content) {
-         return $http.post(cnvUrl, {"content": content});
+         return $http.post('/Qsts/', 
+            {
+               "title": scope.newQst.newTitle,
+               "categoryId": scope.newQst.category.id,
+               "answer": scope.newQst.answer
+            });
       })
       .then(function() {
-         return $http.get(cnvUrl);
+         return $http.get('/Qsts?owner=' + $rootScope.user.id);
       })
       .then(function(rsp) {
-         $scope.msgs = rsp.data;
+         $scope.qsts = rsp.data;
       })
       .catch(function(err) {
          console.log("Error: " + JSON.stringify(err));
       });
+   };
+
+   $scope.editQst = function() {
+
    };
 
 }]);

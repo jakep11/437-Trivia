@@ -1,0 +1,30 @@
+<div class="modal-header">
+   <h3 class="modal-title">{{dlgTitle}}</h3>
+</div>
+<div class = "modal-body">
+   <form>
+      <fieldset class="form-group">
+         <label>Question Title</label>
+         <input type="text" class="form-control" placeholder="Message" 
+          ng-model="newQst.newTitle">
+      </fieldset>
+      <fieldset class="form-group">
+         <label>Category</label>
+         <input type="text" class="form-control" placeholder="Message" 
+          ng-model="newQst.category">
+      </fieldset>
+      <fieldset class="form-group">
+         <label>Answer</label>
+         <input type="text" class="form-control" placeholder="Message" 
+          ng-model="newQst.answer">
+      </fieldset>
+   </form>
+</div>
+<div class="modal-footer">
+   <button type="button" class="btn btn-primary" 
+    ng-disabled="!newQst.newTitle && !newQst.category && !newQst.answer"
+    ng-click="$close(newQst)">OK</button>
+   <button type="button" class="btn btn-warning" ng-click="$dismiss()">
+      Cancel
+   </button>
+</div>
