@@ -21,8 +21,8 @@ app.config(['$stateProvider', '$urlRouterProvider',
          templateUrl: 'Register/register.template.html',
          controller: 'registerController',
       })
-      .state('cnvDetail', {
-         url: '/cnvDetail/:cnvId',
+      .state('categories', {
+         url: '/category/',
          templateUrl: 'Conversation/cnvDetail.template.html',
          controller: 'cnvDetailController',
          resolve: {
@@ -42,8 +42,8 @@ app.config(['$stateProvider', '$urlRouterProvider',
             }] 
          }
       })
-      .state('cnvOverview', {
-         url: '/cnvs',
+      .state('category', {
+         url: '/category/:ctgId',
          templateUrl: 'Conversation/cnvOverview.template.html',
          controller: 'cnvOverviewController',
          resolve: {
@@ -58,8 +58,8 @@ app.config(['$stateProvider', '$urlRouterProvider',
             }
          }
       })
-      .state('myCnvOverview', {
-         url: '/cnvs/:prsID',
+      .state('correct', {
+         url: '/correct/',
          templateUrl: 'Conversation/cnvOverview.template.html',
          controller: 'cnvOverviewController',
          resolve: {

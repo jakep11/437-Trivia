@@ -74,7 +74,7 @@ router.get('/:id', function(req, res) {
    var vld = req.validator;
 
    if (vld.checkPrsOK(req.params.id)) {
-      req.cnn.query('select id, firstName, lastName, email,' +
+      req.cnn.query('select id, firstName, lastName, email, points' +
       ' UNIX_TIMESTAMP(whenRegistered) * 1000 as whenRegistered,' +
       'UNIX_TIMESTAMP(termsAccepted) * 1000 as termsAccepted,' +
       ' role from Person where id = ?', [req.params.id],
@@ -104,6 +104,7 @@ router.put('/:id', function(req, res) {
        .chain(!(body.role < 0), Tags.badValue, ["role"])
 
        .chain(!(body.hasOwnProperty("id")), Tags.forbiddenField, ["id"])
+       .chain(!(body.hasOwnProperty("score")), Tags.forbiddenField, ["score"])
        .chain(!(body.hasOwnProperty("email")), Tags.forbiddenField, ["email"])
        .chain(!(body.hasOwnProperty("termsAccepted")),
        Tags.forbiddenField, ["termsAccepted"])
