@@ -1,53 +1,64 @@
 //Alexis
-
 var Express = require('express');
 var Tags = require('../Validator.js').Tags;
 var router = Express.Router({caseSensitive: true});
 var async = require('async');
 
-router.baseURL = '/Cnvs';
+router.baseURL = '/Qsts';
 
+
+// return questions with owner specified or current AU
 router.get('/', function(req, res) {
-   if (req.query.hasOwnProperty("owner")) {
-      req.cnn.chkQry('select id, ownerId, title, UNIX_TIMESTAMP(lastMessage)' +
-       ' * 1000 as lastMessage from Conversation where ownerId = ?', 
-       parseInt(req.query.owner),
-       function(err, cnvs) {
-          if (!err)
-             res.json(cnvs);
-          
-          req.cnn.release();
-       });
+   var cnn = req.cnn;
+   var ownerId = req.query.owner || req.session.id;
+
+   if (ownerId !== req.session.id) {
+      cnn.chkQry('select q.id, ownerId, c.title as category, q.title from' +
+       ' Question as q ' +
+       'inner join Category as c on q.categoryId = c.id where ownerId = ?',
+       ownerId,
+      function(err, qsts) {
+         if(!err) {
+            res.json(qsts);
+         }
+         cnn.release();
+      });
    }
    else {
-      req.cnn.chkQry('select id, ownerId, title, UNIX_TIMESTAMP(lastMessage)' +
-       ' * 1000 as lastMessage from Conversation', null,
-       function(err, cnvs) {
-          if (!err)
-             res.json(cnvs);
-
-          req.cnn.release();
+      cnn.chkQry('select q.id, ownerId, c.title as category, q.title,' +
+       ' q.answer from Question as q ' +
+       'inner join Category as c on q.categoryId = c.id where ownerId = ?',
+      ownerId,
+      function(err, qsts) {
+         if(!err) {
+            res.json(qsts);
+         }
+         cnn.release();
       });
    }
 });
 
+// add a new question with the owner as the current AU
 router.post('/', function(req, res) {
    var vld = req.validator;
    var body = req.body;
    var cnn = req.cnn;
+   var titleLimit = 500, answerLimit = 100;
 
    async.waterfall([
    function(cb) {
-      if(vld.hasFields(body, ["title"], cb) &&
-       vld.check(req.body.title.length < 80, Tags.badValue, ["title"], cb)) {
-         cnn.chkQry('select * from Conversation where title = ?', 
+      if(vld.hasFields(body, ["title", "categoryId", "answer"], cb) &&
+       vld.chain(body.answer.length < answerLimit, Tags.badValue, ["answer"])
+       .check(body.title.length < titleLimit, Tags.badValue, ["title"], cb)) {
+         cnn.chkQry('select * from Question where title = ?',
           body.title, cb);
       }
    },
-   function(existingCnv, fields, cb) {
+   function(existingQst, fields, cb) {
       body.ownerId = req.session.id;
-      if (vld.check(!existingCnv.length, Tags.dupTitle, null, cb))
-         cnn.chkQry("insert into Conversation set ?", body, cb);
+      if (vld.check(!existingQst.length, Tags.dupTitle, null, cb)) {
+         cnn.chkQry("insert into Question set ?", body, cb);
+      }
    },
    function(insRes, fields, cb) {
       res.location(router.baseURL + '/' + insRes.insertId).end();
@@ -58,135 +69,101 @@ router.post('/', function(req, res) {
    });
 });
 
-router.get('/:cnvId', function(req, res) {
-   req.cnn.chkQry('select id, ownerId, title, UNIX_TIMESTAMP(lastMessage)' +
-       ' * 1000 as lastMessage from Conversation where id = ?', 
-       parseInt(req.params.cnvId),
-       function(err, cnvs) {
-          if (!err && req.validator.check(cnvs.length, Tags.notFound))
-             res.json(cnvs[0]);
-         
-       });
-    req.cnn.release();
-});
-
-router.put('/:cnvId', function(req, res) {
-   var vld = req.validator;
+// edit specific question, must be owner or Admin
+router.put('/:qstId', function(req, res) {
    var body = req.body;
    var cnn = req.cnn;
-   var cnvId = req.params.cnvId;
-
-   async.waterfall([
-   function(cb) {
-      cnn.chkQry('select * from Conversation where id = ?', [cnvId], cb);
-   },
-   function(cnvs, fields, cb) {
-      if (vld.check(cnvs.length, Tags.notFound, null, cb) &&
-       vld.checkPrsOK(cnvs[0].ownerId, cb) && (!body.title ||
-       vld.check(body.title.length < 80, Tags.badValue, ["title"], cb)))
-         cnn.chkQry('select * from Conversation where id <> ? && title = ?',
-          [cnvId, body.title], cb);
-   },
-   function(sameTtl, fields, cb) {
-      if (vld.check(!sameTtl.length, Tags.dupTitle, null, cb))
-         cnn.chkQry("update Conversation set title = ? where id = ?",
-          [body.title, cnvId], cb);
-   }],
-   function(err) {
-      if (!err)
-         res.status(200).end();
-      req.cnn.release();
-   });
-});
-
-router.delete('/:cnvId', function(req, res) {
    var vld = req.validator;
-   var cnvId = req.params.cnvId;
-   var cnn = req.cnn;
+   var qstId = req.params.qstId;
+   var titleLimit = 500, answerLimit = 100;
 
    async.waterfall([
    function(cb) {
-      cnn.chkQry('select * from Conversation where id = ?', [cnvId], cb);
+      cnn.chkQry('select * from Question where id = ?', qstId,
+       function(err, qst) {
+         if(!err && vld.check(qst.length, Tags.notFound)) {
+            cb(qst[0]);
+         }
+       });
    },
-   function(cnvs, fields, cb) {
-      if (vld.check(cnvs.length, Tags.notFound, null, cb) &&
-       vld.checkPrsOK(cnvs[0].ownerId, cb))
-         cnn.chkQry('delete from Conversation where id = ?', [cnvId], cb);
+   function(qst, cb) {
+      if (vld.checkPrsOK(qst.ownerId, cb) &&
+       vld.check(body.categoryId, null, null, cb)) {
+         cnn.chkQry('select * from Category where id = ?', body.categoryId,
+         function(err, ctg) {
+            if(!err && vld.check(ctg.length, Tags.badValue, ["categoryId"], cb)) {
+               cb(qst);
+            }
+         });
+      }
    },
-   function(nothing, fields, cb) {
-      cnn.chkQry('delete from Message where cnvId = ?', [cnvId], cb);
+   function(qst, cb) {
+      if (vld.chain(!body.title ||
+       body.title < titleLimit, Tags.badValue, ["title"])
+      .chain(!body.answer || body.answer < answerLimit, Tags.badValue,
+       ["answer"])
+      .check(!body.title || qst.title !== body.title, Tags.dupTitle, null, cb)) {
+         cnn.chkQry('update Question set ? where id = ?', [body, qst.id], cb);
+      }
    }],
    function(err) {
-      if (!err)
+      if(!err) {
          res.status(200).end();
+      }
       cnn.release();
    });
 });
 
-router.get('/:cnvId/Msgs', function(req, res) {
+// delete specific question if AU is owner or admin
+router.delete('/:qstId', function(req, res) {
    var vld = req.validator;
-   var cnvId = req.params.cnvId;
+   var qstId = req.params.qstId;
    var cnn = req.cnn;
-   var query = 'select Message.id, UNIX_TIMESTAMP(whenMade) * 1000' +
-    ' as whenMade, email, content from Conversation c join' +
-    ' Message on cnvId = c.id join Person p on prsId = p.id where (c.id = ?' +
-    ' and UNIX_TIMESTAMP(whenMade) * 1000 < ?) order by whenMade asc, id';
-   var d = new Date();
-   var date = req.query.hasOwnProperty("dateTime") ? 
-    parseInt(req.query.dateTime) : d.getTime();
-   var params = [parseInt(cnvId), date];
-
-   // And finally add a limit clause and parameter if indicated.
-   if (req.query.hasOwnProperty("num")) {
-      query += ' limit ?';
-      params.push(parseInt(req.query.num));
-   }
 
    async.waterfall([
-   function(cb) {  // Check for existence of conversation
-      cnn.chkQry('select * from Conversation where id = ?', [cnvId], cb);
+   function(cb) {
+      cnn.chkQry('select * from Question where id = ?', qstId, cb);
    },
-   function(cnvs, fields, cb) { // Get indicated messages
-      if (vld.check(cnvs.length, Tags.notFound, null, cb))
-         cnn.chkQry(query, params, cb);
-   },
-   function(msgs, fields, cb) { // Return retrieved messages
-      res.json(msgs);
-      cnn.release();
+   function(qsts, fields, cb) {
+      if(vld.check(qsts.length, Tags.notFound, null, cb) &&
+       vld.checkPrsOK(qsts[0].id, cb)) {
+         cnn.chkQry('delete from Question where id = ?', qstId, cb);
+      }
    }],
    function(err){
+      if(!err) {
+         res.status(200).end();
+      }
       cnn.release();
    });
 });
 
-router.post('/:cnvId/Msgs', function(req, res){
+// submit guess to question, if correct add user to PersonQuestion table
+router.post('/:qstId/Answers', function(req, res) {
    var vld = req.validator;
    var cnn = req.cnn;
-   var cnvId = req.params.cnvId;
-   var now;
+   var body = req.body;
+   var qstId = req.params.qstId;
 
    async.waterfall([
    function(cb) {
-      if(vld.check(req.body.hasOwnProperty("content"), Tags.missingField,
-       ["content"], cb) && vld.check(req.body.content.length < 5000, 
-       Tags.badValue, ["content"], cb)) {
-         cnn.chkQry('select * from Conversation where id = ?', [cnvId], cb);
-      }
+      //get question
+      cnn.chkQry('select * from Question where id = ?', qstId, cb);
    },
-   function(cnvs, fields, cb) {
-      if (vld.check(cnvs.length, Tags.notFound, null, cb)) {
-         cnn.chkQry('insert into Message set ?',
-          {cnvId: cnvId, prsId: req.session.id,
-          whenMade: now = new Date(), content: req.body.content}, cb);
+   function(qsts, fields, cb) {
+      //check if question exists
+      if(vld.check(qsts.length, Tags.notFound, cb) &&
+       vld.hasFields(body, ["answer"], cb) &&
+       vld.check(qsts[0].answer === body.answer, null, null, cb)) {
+         //add user and question to correct table
+         cnn.chkQry('insert into PersonQuestion (personId, questionId)' +
+          ' values(?,?)', [req.session.id, qstId], cb);
       }
-      
-   },
-   function(insRes, fields, cb) {
-      res.location(router.baseURL + '/' + insRes.insertId).end();
-      cnn.chkQry("update Conversation set lastMessage = ? where id = ?",
-       [now, cnvId], cb);
    }],
    function(err) {
+      if(!err) {
+         res.status(200).end();
+      }
       cnn.release();
    });
 });
