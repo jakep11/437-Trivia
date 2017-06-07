@@ -74,13 +74,15 @@ router.get('/:id', function(req, res) {
    var vld = req.validator;
 
    if (vld.checkPrsOK(req.params.id)) {
-      req.cnn.query('select id, firstName, lastName, email, points' +
+      req.cnn.query('select id, firstName, lastName, email, points,' +
       ' UNIX_TIMESTAMP(whenRegistered) * 1000 as whenRegistered,' +
       'UNIX_TIMESTAMP(termsAccepted) * 1000 as termsAccepted,' +
       ' role from Person where id = ?', [req.params.id],
       function(err, prsArr) {
+        //console.log(err);
+        //console.log(prsArr);
          if (vld.check(prsArr.length, Tags.notFound))
-            res.json(prsArr);
+            res.json(prsArr); 
 
          req.cnn.release();
       });

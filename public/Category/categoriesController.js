@@ -1,4 +1,4 @@
-app.controller('cnvOverviewController', ['$scope','$rootScope', '$state', 
+app.controller('categoriesController', ['$scope','$rootScope', '$state', 
  '$http', '$uibModal', 'notifyDlg', 'cnvs', 'prsID', 
  function($scope, $rootScope, $state, $http, $uibM, nDlg, cnvs, prsID) {
    $scope.cnvs = cnvs;
@@ -11,7 +11,7 @@ app.controller('cnvOverviewController', ['$scope','$rootScope', '$state',
       var selectedTitle;
 
       $uibM.open({
-         templateUrl: 'Conversation/editCnvDlg.template.html',
+         templateUrl: 'Category/editCnvDlg.template.html',
          scope: $scope
       }).result
       .then(function(newTitle) {
@@ -47,7 +47,7 @@ app.controller('cnvOverviewController', ['$scope','$rootScope', '$state',
 
 
       $uibM.open({
-         templateUrl: 'Conversation/editCnvDlg.template.html',
+         templateUrl: 'Category/editCnvDlg.template.html',
          scope: $scope
       }).result
       .then(function(newTitle) {

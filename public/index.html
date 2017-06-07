@@ -20,8 +20,11 @@
    <script src="Register/registerController.js"></script>
    <script src="Login/loginController.js"></script>
    <script src="Login/loginService.js"></script>
-   <script src="Conversation/cnvOverviewController.js"></script>
-   <script src="Conversation/cnvDetailController.js"></script>
+   <script src="Category/categoryController.js"></script>
+   <script src="Category/categoriesController.js"></script>
+   <script src="Correct/correctController.js"></script>
+   <script src="Question/myQstsController.js"></script>
+
    <script src="navController.js"></script>
 
    <script src="ui-routes.js"></script>
@@ -46,10 +49,13 @@
             <a ui-sref="register">Register</a>
          </li>
          <li ng-if="!!user">
-            <a ui-sref="cnvOverview">All Conversations</a>
+            <a ui-sref="categories">All Categories</a>
          </li>
          <li ng-if="!!user">
-            <a ui-sref="myCnvOverview({prsID: user.id})">My Conversations</a>
+            <a ui-sref="myQsts">My Questions</a>
+         </li>
+         <li ng-if="!!user">
+            <a ui-sref="correct">Answered Questions</a>
          </li>
       </ul>
       <ul ng-if="!!user" class="nav navbar-nav pull-right">

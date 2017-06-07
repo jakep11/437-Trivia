@@ -1,5 +1,5 @@
 
-app.config(['$stateProvider', '$urlRouterProvider',
+app.config(['$stateProvider', '$urlRouterProvider', 
    function($stateProvider, $router) {
 
       //redirect to home if path is not matched
@@ -23,55 +23,55 @@ app.config(['$stateProvider', '$urlRouterProvider',
       })
       .state('categories', {
          url: '/category/',
-         templateUrl: 'Conversation/cnvDetail.template.html',
-         controller: 'cnvDetailController',
+         templateUrl: 'Category/categories.template.html',
+         controller: 'categoriesController',
          resolve: {
-            msgs: ['$q', '$http', '$stateParams', function($q, $http, 
+            ctgs: ['$q', '$http', '$stateParams', function($q, $http, 
              $stateParams) {
-               return $http.get('/Cnvs/' + $stateParams.cnvId + '/Msgs')
+               return $http.get('/Ctgs/')
                .then(function(response) {
                   return response.data;
                });
-            }],
-            cnv: ['$q', '$http', '$stateParams', function($q, $http, 
-             $stateParams) {
-               return $http.get('/Cnvs/' + $stateParams.cnvId)
-               .then(function(response) {
-                  return response.data;
-               });
-            }] 
+            }]
          }
       })
       .state('category', {
          url: '/category/:ctgId',
-         templateUrl: 'Conversation/cnvOverview.template.html',
-         controller: 'cnvOverviewController',
+         templateUrl: 'Category/category.template.html',
+         controller: 'categoryController',
          resolve: {
-            cnvs: ['$q', '$http', function($q, $http) {
-               return $http.get('/Cnvs')
+            qsts: ['$q', '$http', function($q, $http) {
+               return $http.get('/Ctgs/' + $stateParams.ctgId)
                .then(function(response) {
                   return response.data;
                });
-            }],
-            prsID: function() {
-               return null;
-            }
+            }]
+         }
+      })
+      .state('myQsts', {
+         url: '/myQsts/:prsId',
+         templateUrl: 'Question/myQsts.template.html',
+         controller: 'myQstController',
+         resolve: {
+            qsts: ['$q', '$http', function($q, $http) {
+               return $http.get('/Qsts?owner=' + $stateParams.prsId)
+               .then(function(response) {
+                  return response.data;
+               });
+            }]
          }
       })
       .state('correct', {
          url: '/correct/',
-         templateUrl: 'Conversation/cnvOverview.template.html',
-         controller: 'cnvOverviewController',
+         templateUrl: 'Correct/correct.template.html',
+         controller: 'correctController',
          resolve: {
-            cnvs: ['$q', '$http', '$stateParams', function($q, $http, 
+            qsts: ['$q', '$http', '$stateParams', function($q, $http, 
              $stateParams) {
-               return $http.get('/Cnvs?owner=' + $stateParams.prsID)
+               return $http.get('/Qsts/Correct')
                .then(function(response) {
                   return response.data;
                });
-            }],
-            prsID: ['$stateParams', function($stateParams) {
-               return $stateParams.prsID;
             }]
          }
       });

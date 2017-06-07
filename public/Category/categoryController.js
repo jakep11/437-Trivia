@@ -1,4 +1,4 @@
-app.controller('cnvDetailController',
+app.controller('categoryController',
  ['$scope', '$state', '$http', '$uibModal', 'notifyDlg', 'msgs', 'cnv',
  function($scope, $state, $http, $uibM, nDlg, msgs, cnv) {
    $scope.msgs = msgs;
@@ -11,7 +11,7 @@ app.controller('cnvDetailController',
       var selectedTitle;
 
       $uibM.open({
-         templateUrl: 'Conversation/addMsgDlg.template.html',
+         templateUrl: 'Category/addMsgDlg.template.html',
          scope: $scope
       }).result
       .then(function(content) {
