@@ -66,8 +66,7 @@ app.config(['$stateProvider', '$urlRouterProvider',
          templateUrl: 'Correct/correct.template.html',
          controller: 'correctController',
          resolve: {
-            qsts: ['$q', '$http', '$stateParams', function($q, $http, 
-             $stateParams) {
+            anrs: ['$q', '$http', '$stateParams', function($q, $http) {
                return $http.get('/Qsts/Correct')
                .then(function(response) {
                   return response.data;
