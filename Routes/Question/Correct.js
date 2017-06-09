@@ -41,7 +41,6 @@ router.get('/:qstId', function(req, res) {
        ' personId = ?', [parseInt(qstId), req.session.id], cb);
    },
    function(qsts) {
-      console.log(qsts);
       res.json({correct : qsts.length > 0});
       cnn.release();
    }],
