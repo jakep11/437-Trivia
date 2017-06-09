@@ -4,19 +4,22 @@ app.controller('questionController',
     $scope.qsts = qsts;
     $scope.guess = null;
 
-    $scope.submitGuess = function(guess, qstId) {
-       console.log(guess + " " + qstId);
-       $http.post("Qsts/" + qstId + "/Answers", guess)
+    $scope.submitGuess = function(guess, qstId, $event) {
+       var answerDiv = $event.target.parentElement;
+       var children = answerDiv.children;
+       $http.post("Qsts/" + qstId + "/Answers", {guess : guess})
         .then(function() {
            return $http.get("Qsts/Correct/" + qstId);
         }).then(function (isCorrect) {
-          if(isCorrect.correct) {
-             // Do something cool
-             console.log("You are right!");
-          } else {
-             // Turn it red or something
-             console.log("You are wrong!")
-          }
+           if(isCorrect.data.correct) {
+              for(var child = 0; child < children.length; child ++) {
+                 children[child].style.backgroundColor = "green";
+              }
+           } else {
+              for(var child = 0; child < children.length; child ++) {
+                 children[child].style.backgroundColor = "red";
+              }
+           }
        });
     }
 }]);

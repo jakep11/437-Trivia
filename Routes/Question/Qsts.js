@@ -156,15 +156,31 @@ router.post('/:qstId/Answers', function(req, res) {
    },
    function(qsts, fields, cb) {
       //check if question exists
+      console.log(159);
       if (vld.check(qsts.length, Tags.notFound, null, cb) &&
        vld.hasFields(body, ["guess"], cb)) {
-         if (qsts[0].answer === body.guess) {
-            //add user and question to correct table
-            var prsQst = {personId: req.session.id, questionId: parseInt(qstId)};
-            cnn.chkQry('insert into PersonQuestion set ?', prsQst, cb);
+         // Disregard capitalization
+         if (qsts[0].answer.toLowerCase() === body.guess.toLowerCase()) {
+            //Query to make sure they didn't already answer
+            cnn.chkQry('select * from PersonQuestion where questionId = ?' +
+             ' and personId = ?', [parseInt(qstId), req.session.id], cb)
          }
-         else
-            cb();
+         else {
+            res.status(200).end();
+            cb("Wrong answer");
+         }
+      }
+   },
+   function(anrs, fields, cb) {
+      console.log(174);
+      // If no answers yet, then insert
+      if(!anrs.length) {
+         var prsQst = {personId: req.session.id, questionId: parseInt(qstId)};
+         //add user and question to correct table
+         cnn.chkQry('insert into PersonQuestion set ?', prsQst, cb);
+      } else {
+         res.status(200).end();
+         cb("Already answered");
       }
    }],
    function(err) {

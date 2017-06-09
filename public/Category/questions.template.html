@@ -1,9 +1,11 @@
-{{qsts[0].categoryTitle}}
+<h1>Category: {{qsts[0].categoryTitle}}</h1>
 <div class="list-group">
    <div class="list-group-item" ng-repeat="qst in qsts">
       <div>Question: {{qst.title}}</div>
-      <div><input type="text" ng-model="guess"/>
-         <button ng-click="submitGuess(guess, qst.id)">Submit Answer</button>
+      <div><input type="text" ng-model="guess"
+                  ng-keypress="($event.which === 13)?submitGuess(guess, qst.id, $event):0"/>
+         <button ng-click="submitGuess(guess, qst.id, $event)">Submit
+            Answer</button>
       </div>
    </div>
 </div>
