@@ -20,9 +20,10 @@ router.get('/', function(req, res) {
        ' PersonQuestion as pq where pq.personId = ? and ctg.id =' +
        ' qst.categoryId and qst.id = pq.questionId;', req.session.id, cb);
    },
-   function(answers) {
+   function(answers, fields, cb) {
       res.json(answers);
       cnn.release();
+      cb();
    }],
    function(err) {
       console.log(err);
