@@ -47,7 +47,7 @@ router.post('/', function(req, res) {
 
    async.waterfall([
    function(cb) {
-      if(vld.hasFields(body, ["title", "categoryId", "answer"], cb) &&
+      if (vld.hasFields(body, ["title", "categoryId", "answer"], cb) &&
        vld.chain(body.answer.length < answerLimit, Tags.badValue, ["answer"])
        .check(body.title.length < titleLimit, Tags.badValue, ["title"], cb)) {
          cnn.chkQry('select * from Question where title = ?',
@@ -79,22 +79,25 @@ router.put('/:qstId', function(req, res) {
 
    async.waterfall([
    function(cb) {
-      cnn.chkQry('select * from Question where id = ?', qstId,
-       function(err, qst) {
-         if(!err && vld.check(qst.length, Tags.notFound)) {
-            cb(qst[0]);
-         }
-       });
+      cnn.chkQry('select * from Question where id = ?', qstId, cb);
+   },
+   function(qsts, fields, cb) {
+      if (vld.check(qsts.length, Tags.notFound, cb)) {
+         cb(qsts[0]);
+      }
    },
    function(qst, cb) {
-      if (vld.checkPrsOK(qst.ownerId, cb) &&
-       vld.check(body.categoryId, null, null, cb)) {
+      if (vld.checkPrsOK(qst.ownerId, cb) && body.categoryId) {
          cnn.chkQry('select * from Category where id = ?', body.categoryId,
          function(err, ctg) {
-            if(!err && vld.check(ctg.length, Tags.badValue, ["categoryId"], cb)) {
+            if (!err &&
+             vld.check(ctg.length, Tags.badValue, ["categoryId"], cb)) {
                cb(qst);
             }
          });
+      }
+      else {
+         cb(qst);
       }
    },
    function(qst, cb) {
@@ -107,7 +110,7 @@ router.put('/:qstId', function(req, res) {
       }
    }],
    function(err) {
-      if(!err) {
+      if (!err) {
          res.status(200).end();
       }
       cnn.release();
@@ -125,7 +128,7 @@ router.delete('/:qstId', function(req, res) {
       cnn.chkQry('select * from Question where id = ?', qstId, cb);
    },
    function(qsts, fields, cb) {
-      if(vld.check(qsts.length, Tags.notFound, null, cb) &&
+      if (vld.check(qsts.length, Tags.notFound, null, cb) &&
        vld.checkPrsOK(qsts[0].id, cb)) {
          cnn.chkQry('delete from Question where id = ?', qstId, cb);
       }
@@ -152,12 +155,14 @@ router.post('/:qstId/Answers', function(req, res) {
    },
    function(qsts, fields, cb) {
       //check if question exists
-      if(vld.check(qsts.length, Tags.notFound, cb) &&
-       vld.hasFields(body, ["answer"], cb) &&
-       vld.check(qsts[0].answer === body.answer, null, null, cb)) {
+      if (vld.check(qsts.length, Tags.notFound, cb) &&
+       vld.hasFields(body, ["answer"], cb) && qsts[0].answer === body.answer) {
          //add user and question to correct table
-         cnn.chkQry('insert into PersonQuestion (personId, questionId)' +
-          ' values(?,?)', [req.session.id, qstId], cb);
+         var prsQst = {personId: req.session.id, questionId: qstId};
+         cnn.chkQry('insert into PersonQuestion set ?', prsQst, cb);
+      }
+      else {
+         cb();
       }
    }],
    function(err) {
