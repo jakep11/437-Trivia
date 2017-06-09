@@ -38,7 +38,7 @@ create table PersonQuestion (
   personId int,
   questionId int,
   foreign key (personId) references Person(id) on delete cascade,
-  foreign key (questionId) references Category(id) on delete cascade
+  foreign key (questionId) references Question(id) on delete cascade
 );
 
 insert into Person (firstName, lastName, email, password, points, whenRegistered, role)

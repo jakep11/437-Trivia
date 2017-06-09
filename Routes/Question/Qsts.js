@@ -83,8 +83,8 @@ router.put('/:qstId', function(req, res) {
       cnn.chkQry('select * from Question where id = ?', qstId, cb);
    },
    function(qsts, fields, cb) {
-      if (vld.check(qsts.length, Tags.notFound, cb) &&
-       vld.checkPrsOK(qsts[0].ownerId, cb) && body.categoryId) {
+      if (vld.check(qsts.length, Tags.notFound, null, cb) &&
+       vld.checkPrsOK(qsts[0].ownerId, cb)) {
          if (body.categoryId) {
             qst = qsts[0];
             cnn.chkQry('select * from Category where id = ?', body.categoryId,
@@ -99,10 +99,9 @@ router.put('/:qstId', function(req, res) {
             cb();
          }
       }
-
    },
    function(cb) {
-
+      console.log(cb);
       if (vld.chain(!body.title ||
        body.title.length < titleLimit, Tags.badValue, ["title"])
       .chain(!body.answer || body.answer.length < answerLimit, Tags.badValue,
@@ -157,11 +156,11 @@ router.post('/:qstId/Answers', function(req, res) {
    },
    function(qsts, fields, cb) {
       //check if question exists
-      if (vld.check(qsts.length, Tags.notFound, cb) &&
+      if (vld.check(qsts.length, Tags.notFound, null, cb) &&
        vld.hasFields(body, ["guess"], cb)) {
          if (qsts[0].answer === body.guess) {
             //add user and question to correct table
-            var prsQst = {personId: req.session.id, questionId: qstId};
+            var prsQst = {personId: req.session.id, questionId: parseInt(qstId)};
             cnn.chkQry('insert into PersonQuestion set ?', prsQst, cb);
          }
          else
