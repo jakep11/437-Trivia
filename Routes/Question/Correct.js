@@ -22,7 +22,6 @@ router.get('/', function(req, res) {
    },
    function(answers, fields, cb) {
       res.json(answers);
-      cnn.release();
       cb();
    }],
    function(err) {

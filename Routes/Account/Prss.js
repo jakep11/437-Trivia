@@ -76,8 +76,8 @@ router.get('/:id', function(req, res) {
    if (vld.checkPrsOK(req.params.id)) {
       req.cnn.chkQry('select Person.id, firstName, lastName, email,' +
        ' count(personId), UNIX_TIMESTAMP(whenRegistered) * 1000 as whenRegistered,' +
-      'UNIX_TIMESTAMP(termsAccepted) * 1000 as termsAccepted,' +
-      ' role from Person, PersonQuestion where Person.id = ? and' +
+       ' UNIX_TIMESTAMP(termsAccepted) * 1000 as termsAccepted,' +
+       ' role from Person, PersonQuestion where Person.id = ? and' +
        ' PersonQuestion.personId = ?', [req.params.id, req.params.id],
       function(err, prsArr) {
         //console.log(err);
