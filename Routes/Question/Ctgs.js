@@ -90,7 +90,7 @@ router.delete('/:ctgId', function(req, res) {
          cnn.chkQry('delete from Category where id = ?', [ctgId], cb);
    },
    function(nothing, fields, cb) {
-      cnn.chkQry('delete from Question where categoryId = ?', [ctgId], cb);
+      cnn.chkQry('delete from Question where categoryId = ?', [ctgId], cb); 
    }],
    function(err) {
       if (!err)
