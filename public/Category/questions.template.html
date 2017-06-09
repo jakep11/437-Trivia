@@ -2,10 +2,15 @@
 <div class="list-group">
    <div class="list-group-item" ng-repeat="qst in qsts">
       <div>Question: {{qst.title}}</div>
-      <div><input type="text" ng-model="guess"
-                  ng-keypress="($event.which === 13)?submitGuess(guess, qst.id, $event):0"/>
-         <button ng-click="submitGuess(guess, qst.id, $event)">Submit
+      <div>
+         <form name="questionForm">
+            <input type="text" ng-model="guess"
+                     ng-keypress="($event.which === 13)?submitGuess(guess, qst.id, $event):0"/>
+            <button type="submit" class="btn"
+                    ng-click="submitGuess(guess, qst.id, $event)"
+                    ng-disabled="correctAnrs.indexOf(qst.id) >= 0" >Submit
             Answer</button>
+         </form>
       </div>
    </div>
 </div>

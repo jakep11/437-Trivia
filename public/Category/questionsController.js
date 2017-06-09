@@ -1,10 +1,15 @@
 app.controller('questionController',
- ['$scope', '$state', '$http', 'qsts',
- function($scope, $state, $http, qsts) {
+ ['$scope', '$state', '$http', '$rootScope', 'qsts',
+ function($scope, $state, $http, $rootScope, qsts) {
     $scope.qsts = qsts;
+    $scope.correctAnrs = [];
     $scope.guess = null;
 
     $scope.submitGuess = function(guess, qstId, $event) {
+       // Don't do anything if it was already answered
+       if($scope.correctAnrs.indexOf(qstId) >= 0) {
+          return;
+       }
        var answerDiv = $event.target.parentElement;
        var children = answerDiv.children;
        $http.post("Qsts/" + qstId + "/Answers", {guess : guess})
@@ -15,6 +20,8 @@ app.controller('questionController',
               for(var child = 0; child < children.length; child ++) {
                  children[child].style.backgroundColor = "green";
               }
+              $scope.correctAnrs.push(qstId);
+              $rootScope.user.points += 1;
            } else {
               for(var child = 0; child < children.length; child ++) {
                  children[child].style.backgroundColor = "red";

@@ -156,7 +156,6 @@ router.post('/:qstId/Answers', function(req, res) {
    },
    function(qsts, fields, cb) {
       //check if question exists
-      console.log(159);
       if (vld.check(qsts.length, Tags.notFound, null, cb) &&
        vld.hasFields(body, ["guess"], cb)) {
          // Disregard capitalization
@@ -172,7 +171,6 @@ router.post('/:qstId/Answers', function(req, res) {
       }
    },
    function(anrs, fields, cb) {
-      console.log(174);
       // If no answers yet, then insert
       if(!anrs.length) {
          var prsQst = {personId: req.session.id, questionId: parseInt(qstId)};
