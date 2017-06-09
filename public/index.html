@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CHS</title>
+    <title>Trivia</title>
 
     <script src="bower_components/angular/angular.min.js"></script>
    <script 
@@ -52,7 +52,7 @@
             <a ui-sref="categories">All Categories</a>
          </li>
          <li ng-if="!!user">
-            <a ui-sref="myQsts">My Questions</a>
+            <a ui-sref="myQsts({prsId: user.id})">My Questions</a>
          </li>
          <li ng-if="!!user">
             <a ui-sref="correct">Answered Questions</a>
@@ -60,6 +60,7 @@
       </ul>
       <ul ng-if="!!user" class="nav navbar-nav pull-right">
          <li><a id="navbarName">{{user.firstName}} {{user.lastName}}</a></li>
+         <li><a id="navbarName">Score: {{user.points}}</a></li>
          <li  ng-click="logout()"><a>Logout</a></li>
       </ul>
    </nav>

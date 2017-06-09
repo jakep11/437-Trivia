@@ -40,26 +40,36 @@ app.config(['$stateProvider', '$urlRouterProvider',
          templateUrl: 'Category/category.template.html',
          controller: 'categoryController',
          resolve: {
-            qsts: ['$q', '$http', function($q, $http) {
-               return $http.get('/Ctgs/' + $stateParams.ctgId)
-               .then(function(response) {
-                  return response.data;
-               });
-            }]
+            qsts: function() {
+               return [{title: "Category 1 title", answer: "answer"}];
+            }
          }
+         // resolve: {
+         //    qsts: ['$q', '$http', function($q, $http) {
+         //       return $http.get('/Ctgs/' + $stateParams.ctgId)
+         //       .then(function(response) {
+         //          return response.data;
+         //       });
+         //    }]
+         // }
       })
       .state('myQsts', {
          url: '/myQsts/:prsId',
          templateUrl: 'Question/myQsts.template.html',
-         controller: 'myQstController',
+         controller: 'myQstsController',
          resolve: {
-            qsts: ['$q', '$http', function($q, $http) {
-               return $http.get('/Qsts?owner=' + $stateParams.prsId)
-               .then(function(response) {
-                  return response.data;
-               });
-            }]
+            qsts: function() {
+               return [{title: "My Qst title", answer: "answer"}];
+            }
          }
+         // resolve: {
+         //    qsts: ['$q', '$http', function($q, $http) {
+         //       return $http.get('/Qsts?owner=' + $stateParams.prsId)
+         //       .then(function(response) {
+         //          return response.data;
+         //       });
+         //    }]
+         // }
       })
       .state('correct', {
          url: '/correct/',

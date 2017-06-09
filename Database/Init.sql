@@ -8,7 +8,7 @@ create table Person (
    lastName varchar(30) not null,
    email varchar(30) not null,
    password varchar(50),
-   points int,
+   points int DEFAULT 0,
    whenRegistered datetime not null,
    termsAccepted datetime,
    role int unsigned not null,  # 0 normal, 1 admin
@@ -42,4 +42,4 @@ create table PersonQuestion (
 );
 
 insert into Person (firstName, lastName, email, password, points, whenRegistered, role)
-            VALUES ("Joe",     "Admin", "adm@11.com", "password", 0, NOW(), 1);
+  VALUES ("Joe", "Admin", "adm@11.com", "password", 0, NOW(), 1);
