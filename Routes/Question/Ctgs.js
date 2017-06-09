@@ -60,7 +60,9 @@ router.get('/:ctgId', function(req, res) {
       if (vld.check(ctgs.length, Tags.notFound, null, cb)) {
          req.cnn.chkQry('select Q.id as id, Q.title as title, ownerId, C.title ' +
           'as categoryTitle from Question as Q Join Category as C on ' + 
-          'Q.categoryId = C.id where C.id = ?', parseInt(ctgId), cb);
+          'Q.categoryId = C.id where C.id = ?' +
+          ' and Q.id not in (select questionId from PersonQuestion where' +
+          ' personId = ?)', [parseInt(ctgId), req.session.id], cb);
       }
    },
    function(qsts, fields, cb) {
