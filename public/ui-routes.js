@@ -76,18 +76,12 @@ app.config(['$stateProvider', '$urlRouterProvider',
          templateUrl: 'Correct/correct.template.html',
          controller: 'correctController',
          resolve: {
-            qsts: function() {
-               return [{title: "Already Answered title", answer: "answer"}];
-            }
+            anrs: ['$q', '$http', '$stateParams', function($q, $http) {
+               return $http.get('/Qsts/Correct')
+               .then(function(response) {
+                  return response.data;
+               });
+            }]
          }
-         // resolve: {
-         //    qsts: ['$q', '$http', '$stateParams', function($q, $http, 
-         //     $stateParams) {
-         //       return $http.get('/Qsts/Correct')
-         //       .then(function(response) {
-         //          return response.data;
-         //       });
-         //    }]
-         // }
       });
    }]);
