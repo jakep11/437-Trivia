@@ -159,7 +159,7 @@ router.post('/:qstId/Answers', function(req, res) {
       if (vld.check(qsts.length, Tags.notFound, null, cb) &&
        vld.hasFields(body, ["guess"], cb)) {
          // Disregard capitalization
-         if (qsts[0].answer.toLowerCase() === body.guess.toLowerCase()) {
+         if (body.guess && qsts[0].answer.toLowerCase() === body.guess.toLowerCase()) {
             //Query to make sure they didn't already answer
             cnn.chkQry('select * from PersonQuestion where questionId = ?' +
              ' and personId = ?', [parseInt(qstId), req.session.id], cb)
