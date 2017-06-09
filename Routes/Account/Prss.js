@@ -74,8 +74,8 @@ router.get('/:id', function(req, res) {
    var vld = req.validator;
 
    if (vld.checkPrsOK(req.params.id)) {
-      req.cnn.query('select id, firstName, lastName, email, count(personId),' +
-      ' UNIX_TIMESTAMP(whenRegistered) * 1000 as whenRegistered,' +
+      req.cnn.chkQry('select Person.id, firstName, lastName, email,' +
+       ' count(personId), UNIX_TIMESTAMP(whenRegistered) * 1000 as whenRegistered,' +
       'UNIX_TIMESTAMP(termsAccepted) * 1000 as termsAccepted,' +
       ' role from Person, PersonQuestion where Person.id = ? and' +
        ' PersonQuestion.personId = ?', [req.params.id, req.params.id],

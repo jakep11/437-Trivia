@@ -21,7 +21,7 @@ app.config(['$stateProvider', '$urlRouterProvider',
          templateUrl: 'Register/register.template.html',
          controller: 'registerController',
       })
-      .state('categories', {
+      .state('questions', {
          url: '/category/',
          templateUrl: 'Category/categories.template.html',
          controller: 'categoriesController',
@@ -37,7 +37,7 @@ app.config(['$stateProvider', '$urlRouterProvider',
       })
       .state('category', {
          url: '/category/:ctgId',
-         templateUrl: 'Category/category.template.html',
+         templateUrl: 'Category/questions.template.html',
          controller: 'categoryController',
          resolve: {
             qsts: function() {
