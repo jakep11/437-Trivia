@@ -1,2 +1,8 @@
-Correct Template
-<div>{{qsts}}</div>
+<h2>Questions you've answered</h2>
+<div class="list-group">
+   <div class="list-group-item" ng-repeat="anr in anrs">
+      <div>Question: {{anr.title}}</div>
+      <div>Category: {{anr.categoryTitle}}</div>
+      <div>Answer: {{anr.answer}}</div>
+   </div>
+</div>

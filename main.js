@@ -26,6 +26,7 @@ app.use(Session.router);
 // Check general login.  If OK, add Validator to |req| and continue processing,
 // otherwise respond immediately with 401 and noLogin error tag.
 app.use(function(req, res, next) {
+   console.log(req.path);
    if (req.session || (req.method === 'POST' &&
     (req.path === '/Prss' || req.path === '/Ssns'))) {
       req.validator = new Validator(req, res);
@@ -40,7 +41,7 @@ app.use(CnnPool.router);
 // Load all subroutes
 app.use('/Prss', require('./Routes/Account/Prss'));
 app.use('/Ssns', require('./Routes/Account/Ssns'));
-app.use('/Correct', require('./Routes/Question/Correct.js'));
+app.use('/Qsts/Correct', require('./Routes/Question/Correct.js'));
 app.use('/Ctgs', require('./Routes/Question/Ctgs.js'));
 app.use('/Qsts', require('./Routes/Question/Qsts.js'));
 
