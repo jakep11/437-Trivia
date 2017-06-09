@@ -12,7 +12,7 @@ router.get('/', function(req, res) {
    var cnn = req.cnn;
    var ownerId = req.query.owner || req.session.id;
 
-   if (ownerId !== req.session.id) {
+   if (parseInt(ownerId) !== req.session.id) {
       cnn.chkQry('select q.id, ownerId, c.title as category, q.title from' +
        ' Question as q ' +
        'inner join Category as c on q.categoryId = c.id where ownerId = ?',
@@ -76,34 +76,36 @@ router.put('/:qstId', function(req, res) {
    var vld = req.validator;
    var qstId = req.params.qstId;
    var titleLimit = 500, answerLimit = 100;
+   var qst;
 
    async.waterfall([
    function(cb) {
       cnn.chkQry('select * from Question where id = ?', qstId, cb);
    },
    function(qsts, fields, cb) {
-      if (vld.check(qsts.length, Tags.notFound, cb)) {
-         cb(qsts[0]);
+      if (vld.check(qsts.length, Tags.notFound, cb) &&
+       vld.checkPrsOK(qsts[0].ownerId, cb) && body.categoryId) {
+         if (body.categoryId) {
+            qst = qsts[0];
+            cnn.chkQry('select * from Category where id = ?', body.categoryId,
+             function (err, ctg) {
+                if (vld.check(!err && ctg.length, Tags.badValue, ["categoryId"], cb)) {
+                   cb();
+                }
+             });
+         }
+         else {
+            qst = qsts[0];
+            cb();
+         }
       }
+
    },
-   function(qst, cb) {
-      if (vld.checkPrsOK(qst.ownerId, cb) && body.categoryId) {
-         cnn.chkQry('select * from Category where id = ?', body.categoryId,
-         function(err, ctg) {
-            if (!err &&
-             vld.check(ctg.length, Tags.badValue, ["categoryId"], cb)) {
-               cb(qst);
-            }
-         });
-      }
-      else {
-         cb(qst);
-      }
-   },
-   function(qst, cb) {
+   function(cb) {
+
       if (vld.chain(!body.title ||
-       body.title < titleLimit, Tags.badValue, ["title"])
-      .chain(!body.answer || body.answer < answerLimit, Tags.badValue,
+       body.title.length < titleLimit, Tags.badValue, ["title"])
+      .chain(!body.answer || body.answer.length < answerLimit, Tags.badValue,
        ["answer"])
       .check(!body.title || qst.title !== body.title, Tags.dupTitle, null, cb)) {
          cnn.chkQry('update Question set ? where id = ?', [body, qst.id], cb);
@@ -156,13 +158,14 @@ router.post('/:qstId/Answers', function(req, res) {
    function(qsts, fields, cb) {
       //check if question exists
       if (vld.check(qsts.length, Tags.notFound, cb) &&
-       vld.hasFields(body, ["answer"], cb) && qsts[0].answer === body.answer) {
-         //add user and question to correct table
-         var prsQst = {personId: req.session.id, questionId: qstId};
-         cnn.chkQry('insert into PersonQuestion set ?', prsQst, cb);
-      }
-      else {
-         cb();
+       vld.hasFields(body, ["guess"], cb)) {
+         if (qsts[0].answer === body.guess) {
+            //add user and question to correct table
+            var prsQst = {personId: req.session.id, questionId: qstId};
+            cnn.chkQry('insert into PersonQuestion set ?', prsQst, cb);
+         }
+         else
+            cb();
       }
    }],
    function(err) {
