@@ -24,8 +24,6 @@ CnnPool.router = function(req, res, next) {
          res.status(500).json('Failed to get connection');
       else {
          cnn.chkQry = function(qry, prms, cb) {
-            console.log("Query: " + qry + " params: ");
-            console.log(prms);
             // Run real qry, checking for error
             this.query(qry, prms, function(err, qRes, fields) {
                if (err) {

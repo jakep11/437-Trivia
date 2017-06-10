@@ -26,7 +26,7 @@ app.use(Session.router);
 // Check general login.  If OK, add Validator to |req| and continue processing,
 // otherwise respond immediately with 401 and noLogin error tag.
 app.use(function(req, res, next) {
-   console.log(req.path);
+   console.log(req.method + " " + req.path);
    if (req.session || (req.method === 'POST' &&
     (req.path === '/Prss' || req.path === '/Ssns'))) {
       req.validator = new Validator(req, res);
