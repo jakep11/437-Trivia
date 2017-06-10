@@ -2,7 +2,8 @@
 
 <ul class="list-group">
    <div class="list-group-item" ng-repeat="ctg in ctgs">
-      <a ui-sref="questions({ctgId: ctg.id})">Questions in {{ctg.title}}</a>
+      <a ui-sref="questions({ctgId: ctg.id, ctgName : ctg.title})">Questions in
+         {{ctg.title}}</a>
       <button type="button" class="btn btn-default pull-right"
               ng-show="user && user.role == 1" ng-click="delCtg(ctg)">
          <span class="glyphicon glyphicon-trash"></span>
