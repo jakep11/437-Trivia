@@ -5,3 +5,7 @@
 #navbarName:hover {
 	color: #777;
 }
+.modal-body {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

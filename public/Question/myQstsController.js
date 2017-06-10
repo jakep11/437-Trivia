@@ -5,7 +5,9 @@ app.controller('myQstsController',
    $scope.qsts = qsts;
    $scope.ctgs = ctgs;
 
-   $scope.newQst = function() {
+   $scope.addQst = function() {
+      var newTitle = null;
+      var newAnswer = null;
       $scope.title = null;
       $scope.dlgTitle = "New Question";
 
@@ -14,6 +16,8 @@ app.controller('myQstsController',
          scope: $scope
       }).result
       .then(function(newQst) {
+         newTitle = newQst.newTitle;
+         newAnswer = newQst.answer;
          return $http.post('/Qsts/', 
             {
                "title": newQst.newTitle,
@@ -28,14 +32,27 @@ app.controller('myQstsController',
          $scope.qsts = rsp.data;
       })
       .catch(function(err) {
-         console.log("Error: " + JSON.stringify(err));
+         if (err.data[0].tag == "dupTitle")
+            nDlg.show($scope, "Another question already has title " 
+             + newTitle, "Error");
+         else if (err.data[0].tag == "badValue"){
+            if (err.data[0].params[0] === "title") {
+               nDlg.show($scope, "Title is too long. Please shorten title: " 
+             + newTitle, "Error");
+            }
+            else if (err.data[0].params[0] === "answer") {
+               nDlg.show($scope, "Answer is too long. Please shorten answer: " 
+             + newAnswer, "Error");
+            }
+         }
       });
    };
 
    $scope.updateQst = function(qst) {
       $scope.title = null;
       $scope.dlgTitle = "Edit Question";
-
+      var newTitle = null;
+      var newAnswer = null;
       var editTitle = qst.title;
       var editCategory = qst.category;
       var editAnswer = qst.answer;
@@ -46,15 +63,13 @@ app.controller('myQstsController',
          answer: editAnswer
       }
 
-
       $uibM.open({
          templateUrl: 'Question/editQstDlg.template.html',
          scope: $scope
       }).result
       .then(function(editedQst) {
-         console.log("calling new qst http");
-         console.log(editedQst);
-         console.log(editedQst.title);
+         newTitle = editedQst.title;
+         newAnswer = editedQst.answer;
          
          return $http.put('/Qsts/' + qst.id, 
             {
@@ -70,7 +85,19 @@ app.controller('myQstsController',
          $scope.qsts = rsp.data;
       })
       .catch(function(err) {
-         console.log("Error: " + JSON.stringify(err));
+         if (err.data[0].tag == "dupTitle")
+            nDlg.show($scope, "Another question already has title " 
+             + newTitle, "Error");
+         else if (err.data[0].tag == "badValue"){
+            if (err.data[0].params[0] === "title") {
+               nDlg.show($scope, "Title is too long. Please shorten title: " 
+             + newTitle, "Error");
+            }
+            else if (err.data[0].params[0] === "answer") {
+               nDlg.show($scope, "Answer is too long. Please shorten answer: " 
+             + newAnswer, "Error");
+            }
+         }
       });
    };
 
