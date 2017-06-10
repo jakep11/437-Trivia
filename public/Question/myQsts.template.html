@@ -1,6 +1,19 @@
-My Questions Template
-<div>{{qsts}}</div>
-<button ng-click="newQst()" class="btn btn-primary" type="button" 
+<h2>My Questions </h2>
+<div class="list-group">
+   <div class="list-group-item" ng-repeat="qst in qsts">
+   	  <button type="button" class="btn btn-default pull-right"
+       ng-click="updateQst(qst)">
+         <span class="glyphicon glyphicon-edit"></span>
+      </button>
+      <div>Question: {{qst.title}}</div>
+      <div>Category: {{qst.category}}</div>
+      <div>Answer: {{qst.answer}}</div>
+      
+   </div>
+
+</div>
+
+<button ng-click="addQst()" class="btn btn-primary" type="button" 
  style="margin-top:5px">
    New Question
 </button>

@@ -6,25 +6,25 @@
       <fieldset class="form-group">
          <label>Question Title</label>
          <input type="text" class="form-control" placeholder="Question" 
-          ng-model="newQst.newTitle">
+          ng-model="editQst.title">
       </fieldset>
       <fieldset class="form-group">
          <label>Category</label>
-         <select class="form-control" ng-model="newQst.ctg" 
+         <select class="form-control" ng-model="editQst.ctg" 
           ng-options="ctg.title for ctg in ctgs">
          </select>
       </fieldset>
       <fieldset class="form-group">
          <label>Answer</label>
          <input type="text" class="form-control" placeholder="Answer" 
-          ng-model="newQst.answer">
+          ng-model="editQst.answer">
       </fieldset>
    </form>
 </div>
 <div class="modal-footer">
    <button type="button" class="btn btn-primary" 
-    ng-disabled="!newQst.newTitle || !newQst.ctg || !newQst.answer"
-    ng-click="$close(newQst)">OK</button>
+    ng-disabled="!editQst.title || !editQst.ctg || !editQst.answer"
+    ng-click="$close(editQst)">OK</button>
    <button type="button" class="btn btn-warning" ng-click="$dismiss()">
       Cancel
    </button>

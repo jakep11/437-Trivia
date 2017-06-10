@@ -101,12 +101,20 @@ router.put('/:qstId', function(req, res) {
       }
    },
    function(cb) {
-      console.log(cb);
+      if(body.title) {
+         cnn.chkQry('select title from Question where id != ? and title = ?',
+          [qstId, body.title], cb);
+      }
+      else {
+         cb();
+      }
+   },
+   function(qsts, fields, cb) {
       if (vld.chain(!body.title ||
        body.title.length < titleLimit, Tags.badValue, ["title"])
       .chain(!body.answer || body.answer.length < answerLimit, Tags.badValue,
        ["answer"])
-      .check(!body.title || qst.title !== body.title, Tags.dupTitle, null, cb)) {
+      .check(!body.title || !qsts.length, Tags.dupTitle, null, cb)) {
          cnn.chkQry('update Question set ? where id = ?', [body, qst.id], cb);
       }
    }],
