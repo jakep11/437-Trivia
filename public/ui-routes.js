@@ -35,23 +35,18 @@ app.config(['$stateProvider', '$urlRouterProvider',
             }]
          }
       })
-      .state('category', {
+      .state('questions', {
          url: '/category/:ctgId',
-         templateUrl: 'Category/category.template.html',
-         controller: 'categoryController',
+         templateUrl: 'Category/questions.template.html',
+         controller: 'questionController',
          resolve: {
-            qsts: function() {
-               return [{title: "Category 1 title", answer: "answer"}];
-            }
+            qsts: ['$q', '$http', '$stateParams', function($q, $http, $stateParams) {
+               return $http.get('/Ctgs/' + $stateParams.ctgId)
+               .then(function(response) {
+                  return response.data;
+               });
+            }]
          }
-         // resolve: {
-         //    qsts: ['$q', '$http', function($q, $http) {
-         //       return $http.get('/Ctgs/' + $stateParams.ctgId)
-         //       .then(function(response) {
-         //          return response.data;
-         //       });
-         //    }]
-         // }
       })
       .state('myQsts', {
          url: '/myQsts/:prsId',
