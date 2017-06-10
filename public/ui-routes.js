@@ -53,18 +53,21 @@ app.config(['$stateProvider', '$urlRouterProvider',
          templateUrl: 'Question/myQsts.template.html',
          controller: 'myQstsController',
          resolve: {
-            qsts: function() {
-               return [{title: "My Qst title", answer: "answer"}];
-            }
+            qsts: ['$q', '$http','$stateParams', function($q, $http, $stateParams) {
+               //console.log()
+               return $http.get('/Qsts?owner=' + $stateParams.prsId)
+               .then(function(response) {
+                  return response.data;
+               });
+            }],
+            ctgs: ['$q', '$http', '$stateParams', function($q, $http, 
+             $stateParams) {
+               return $http.get('/Ctgs/')
+               .then(function(response) {
+                  return response.data;
+               });
+            }]
          }
-         // resolve: {
-         //    qsts: ['$q', '$http', function($q, $http) {
-         //       return $http.get('/Qsts?owner=' + $stateParams.prsId)
-         //       .then(function(response) {
-         //          return response.data;
-         //       });
-         //    }]
-         // }
       })
       .state('correct', {
          url: '/correct/',
