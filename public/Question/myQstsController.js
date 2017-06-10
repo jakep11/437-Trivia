@@ -4,7 +4,6 @@ app.controller('myQstsController',
  function($scope, $state, $rootScope, $http, $uibM, nDlg, qsts, ctgs) {
    $scope.qsts = qsts;
    $scope.ctgs = ctgs;
-   console.log("My questions controller");
 
    $scope.newQst = function() {
       $scope.title = null;
@@ -15,9 +14,6 @@ app.controller('myQstsController',
          scope: $scope
       }).result
       .then(function(newQst) {
-         console.log("calling new qst http");
-         console.log(newQst);
-         
          return $http.post('/Qsts/', 
             {
                "title": newQst.newTitle,
@@ -36,7 +32,7 @@ app.controller('myQstsController',
       });
    };
 
-   $scope.editQst = function(qst) {
+   $scope.updateQst = function(qst) {
       $scope.title = null;
       $scope.dlgTitle = "Edit Question";
 
@@ -58,6 +54,7 @@ app.controller('myQstsController',
       .then(function(editedQst) {
          console.log("calling new qst http");
          console.log(editedQst);
+         console.log(editedQst.title);
          
          return $http.put('/Qsts/' + qst.id, 
             {
