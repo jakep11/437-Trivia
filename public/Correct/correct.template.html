@@ -1,4 +1,5 @@
 <h2>Questions you've answered</h2>
+<h4 ng-if="anrs.length == 0">you have no answered questions</h4>
 <div class="list-group">
    <div class="list-group-item" ng-repeat="anr in anrs">
       <div>Category: {{anr.categoryTitle}}</div>
