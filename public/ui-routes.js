@@ -46,6 +46,9 @@ app.config(['$stateProvider', '$urlRouterProvider',
                   return response.data;
                });
             }]
+         },
+         params: {
+            ctgName : null
          }
       })
       .state('myQsts', {

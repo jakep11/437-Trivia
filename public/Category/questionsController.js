@@ -1,7 +1,8 @@
 app.controller('questionController',
- ['$scope', '$state', '$http', '$rootScope', 'qsts',
- function($scope, $state, $http, $rootScope, qsts) {
+ ['$scope', '$state', '$http', '$rootScope', '$stateParams', 'qsts',
+ function($scope, $state, $http, $rootScope, $stateParams, qsts) {
     $scope.qsts = qsts;
+    $scope.ctgName = $stateParams.ctgName;
     $scope.correctAnrs = [];
     $scope.guess = null;
 
