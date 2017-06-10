@@ -1,7 +1,7 @@
 //Controller for questions
 app.controller('myQstsController',
- ['$scope', '$state','$rootScope', '$http', '$uibModal', 'notifyDlg', 'qsts', 'ctgs',
- function($scope, $state, $rootScope, $http, $uibM, nDlg, qsts, ctgs) {
+ ['$scope', '$state','$rootScope', '$http', '$uibModal', 'notifyDlg', 'qsts', 
+ 'ctgs', function($scope, $state, $rootScope, $http, $uibM, nDlg, qsts, ctgs) {
    $scope.qsts = qsts;
    $scope.ctgs = ctgs;
 
