@@ -1,0 +1,17 @@
+<div>Question: {{qst.title}}</div>
+<div>
+   <form name="questionForm">
+      <input type="text" ng-model="guess"
+             ng-keypress="($event.which === 13)?submitGuess({
+              guess : guess,
+              id : qst.id,
+              $event : $event}):0"/>
+      <button type="submit" class="btn"
+              ng-click="submitGuess({
+               guess : guess,
+               id : qst.id,
+               $event : $event})"
+              ng-disabled="correctAnrs.indexOf(qst.id) >= 0" >Submit
+         Answer</button>
+   </form>
+</div>

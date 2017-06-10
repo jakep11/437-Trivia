@@ -63,15 +63,14 @@ app.config(['$qProvider', function ($qProvider) {
    $qProvider.errorOnUnhandledRejections(false);
 }]);
 
-app.directive('cnvSummary', [function() {
+app.directive('qstItem', [function() {
    return {
       restrict: 'E',
       scope: {
-         cnv: "=toSummarize",
-         user: "=",
-         editCnv: "&onEdit",
-         delCnv: "&onDelete"
+         qst: "=",
+         correctAnrs: "=",
+         submitGuess: "&submitGuess"
       },
-      templateUrl: "./Conversation/cnvLine.template.html"
+      templateUrl: "./Category/qstItem.template.html"
    };
 }]);
