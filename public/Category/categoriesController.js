@@ -23,7 +23,7 @@ app.controller('categoriesController', ['$scope','$rootScope', '$state',
          $scope.ctgs = rsp.data;
       })
       .catch(function(err) {
-         if (err.data[0].tag == "dupTitle")
+         if (err.data[0].tag === "dupTitle")
             nDlg.show($scope, "Another Category already has title " 
              + selectedTitle, "Error");
          else if (err.data[0].tag === "badValue") {
@@ -33,18 +33,17 @@ app.controller('categoriesController', ['$scope','$rootScope', '$state',
    };
 
 
-   $scope.delCtg = function(index) {
+   $scope.delCtg = function(ctg) {
       $scope.title = null;
-      
-      var selectedTitle;
-      var ctgID = $scope.ctgs[index].id;
+
+      var ctgID = ctg.id;
 
       nDlg.show($scope, "Would you like to delete conversation: '" +
-       $scope.ctgs[index].title + "'?", "Delete Confirmation", 
+       ctg.title + "'?", "Delete Confirmation",
        ["OK", "Cancel"])
       .then(function(btn) {
-         if (btn == "OK") {
-            return $http.delete('/Ctgs/' + cnvID);
+         if (btn === "OK") {
+            return $http.delete('/Ctgs/' + ctgID);
          }
       })
       .then(function() {
@@ -55,6 +54,6 @@ app.controller('categoriesController', ['$scope','$rootScope', '$state',
       })
       .catch(function(err) {
          console.log(err);
-      })
+      });
    };
 }]);

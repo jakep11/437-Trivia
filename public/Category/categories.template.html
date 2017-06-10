@@ -1,8 +1,17 @@
-Categories Template
-<a ui-sref="questions({ctgId : 2})">Questions for Category 2</a>
-<div>{{ctgs}}</div>
+<h1>All Categories</h1>
+
+<ul class="list-group">
+   <div class="list-group-item" ng-repeat="ctg in ctgs">
+      <a ui-sref="questions({ctgId: ctg.id})">Questions in {{ctg.title}}</a>
+      <button type="button" class="btn btn-default pull-right"
+              ng-show="user && user.role == 1" ng-click="delCtg(ctg)">
+         <span class="glyphicon glyphicon-trash"></span>
+      </button>
+   </div>
+</ul>
 
 <button ng-click="newCtg()" class="btn btn-primary" type="button" 
  style="margin-top:5px">
    New Category
 </button>
+
