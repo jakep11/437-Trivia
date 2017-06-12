@@ -13,6 +13,7 @@ app.controller('categoriesController', ['$scope','$rootScope', '$state',
          scope: $scope
       }).result
       .then(function(newTitle) {
+         selectedTitle = newTitle;
          return $http.post("Ctgs", {title: newTitle});
       })
       .then(function() {
@@ -24,7 +25,7 @@ app.controller('categoriesController', ['$scope','$rootScope', '$state',
       })
       .catch(function(err) {
          if (err.data[0].tag === "dupTitle")
-            nDlg.show($scope, "Another Category already has title " 
+            nDlg.show($scope, "Another Category already has title: " 
              + selectedTitle, "Error");
          else if (err.data[0].tag === "badValue") {
             nDlg.show($scope, "Title must be less than 80 characters");
@@ -38,7 +39,7 @@ app.controller('categoriesController', ['$scope','$rootScope', '$state',
 
       var ctgID = ctg.id;
 
-      nDlg.show($scope, "Would you like to delete conversation: '" +
+      nDlg.show($scope, "Would you like to delete category: '" +
        ctg.title + "'?", "Delete Confirmation",
        ["OK", "Cancel"])
       .then(function(btn) {
