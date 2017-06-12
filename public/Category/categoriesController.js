@@ -39,7 +39,7 @@ app.controller('categoriesController', ['$scope','$rootScope', '$state',
 
       var ctgID = ctg.id;
 
-      nDlg.show($scope, "Would you like to delete conversation: '" +
+      nDlg.show($scope, "Would you like to delete category: '" +
        ctg.title + "'?", "Delete Confirmation",
        ["OK", "Cancel"])
       .then(function(btn) {
