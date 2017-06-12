@@ -33,7 +33,7 @@ app.controller('myQstsController',
       })
       .catch(function(err) {
          if (err.data[0].tag == "dupTitle")
-            nDlg.show($scope, "Another question already has title " 
+            nDlg.show($scope, "Another question already has title: " 
              + newTitle, "Error");
          else if (err.data[0].tag == "badValue"){
             if (err.data[0].params[0] === "title") {
@@ -56,6 +56,14 @@ app.controller('myQstsController',
       var editTitle = qst.title;
       var editCategory = qst.category;
       var editAnswer = qst.answer;
+      
+      //Find correct category to initialize modal
+      for (var i = 0; i < $scope.ctgs.length; i++) {
+         if ($scope.ctgs[i].title === qst.category) {
+            editCategory = $scope.ctgs[i];
+            break;
+         }
+      }
 
       $scope.editQst = {
          title: editTitle,
@@ -86,7 +94,7 @@ app.controller('myQstsController',
       })
       .catch(function(err) {
          if (err.data[0].tag == "dupTitle")
-            nDlg.show($scope, "Another question already has title " 
+            nDlg.show($scope, "Another question already has title: " 
              + newTitle, "Error");
          else if (err.data[0].tag == "badValue"){
             if (err.data[0].params[0] === "title") {
