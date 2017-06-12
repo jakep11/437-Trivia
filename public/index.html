@@ -61,7 +61,7 @@
       <ul ng-if="!!user" class="nav navbar-nav pull-right">
          <li><a id="navbarName">{{user.firstName}} {{user.lastName}}</a></li>
          <li><a id="navbarName">Score: {{user.points}}</a></li>
-         <li  ng-click="logout()"><a>Logout</a></li>
+         <li  ng-click="logout()"><a><button>Logout</button></a></li>
       </ul>
    </nav>
    <ui-view/>
